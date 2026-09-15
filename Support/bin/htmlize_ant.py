@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys, os.path, re, os
 
@@ -9,14 +9,14 @@ matcher = re.compile(
 buildfile = None
 proj_dir = None
 
-print """
+print("""
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="file://%s/ant.css" />
     </head>
 
     <body>
-""" % (os.environ['TM_BUNDLE_SUPPORT'])
+""" % (os.environ['TM_BUNDLE_SUPPORT']))
 
 sys.stdout.flush()
 
@@ -25,7 +25,7 @@ lastLine = None
 line = sys.stdin.readline()
 while line:
     line = line.rstrip()
-    
+
     ## find the buildfile, and from that, the project directory
     if line.startswith("Buildfile"):
         buildfile = line[(line.find(":") + 2):]
@@ -33,10 +33,10 @@ while line:
 
     match = matcher.search(line)
 
-    print "<pre>"
+    print("<pre>")
 
     if not match:
-        print line
+        print(line)
     else:
         fn = match.group(1)
 
@@ -46,30 +46,21 @@ while line:
             short_name = fn
 
         colInd = 0
-        ## if lastLine:
-        ##     if lastLine[-1] == "^":
-        ##         # print lastLine
-        ##         brktInd = lastLine.find("]")
-        ## 
-        ##         if lastLine != -1:
-        ##             colInd = len(lastLine[(brktInd + 2):])
-        ##             # print lastLine[(brktInd + 2):], colInd
-        
-        
-        print line[:match.start()].rstrip(),
-        print '<a href="txmt://open?url=file://%s&line=%s&column=%d">%s:%s: %s</a>' % (
-            fn, match.group(2), colInd, short_name, match.group(2), match.group(3)
-        ),
-        print line[match.end():]
 
-    print "</pre>"
+        print(line[:match.start()].rstrip(), end=' ')
+        print('<a href="txmt://open?url=file://%s&line=%s&column=%d">%s:%s: %s</a>' % (
+            fn, match.group(2), colInd, short_name, match.group(2), match.group(3)
+        ), end=' ')
+        print(line[match.end():])
+
+    print("</pre>")
     sys.stdout.flush()
-    
+
     ## read next line
     lastLine = line
     line = sys.stdin.readline()
 
-print """
+print("""
     </body>
 </html>
-"""
+""")
